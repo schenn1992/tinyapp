@@ -6,14 +6,9 @@ const bodyParser = require("body-parser");
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
-});
-
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "9sm5xK": "http://www.google.com",
 };
 
 app.get("/", (req, res) => {
@@ -42,16 +37,25 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+app.post("/urls", (req, res) => {
+  let shortURL = generateRandomString(6);
+  let longURL = req.body.longURL
+  urlDatabase[shortURL] = longURL;
+  console.log(urlDatabase);  // Log the POST request body to the console
+  res.redirect(`urls/${shortURL}`);         // Respond with 'Ok' (we will replace this)
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
-function generateRandomString() {
+function generateRandomString(length) {
   let result = '';
   let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   let charactersLength = characters.length;
-  for (let i = 0; i < charactersLength; i++ ) {
+  for (let i = 0; i < length; i++ ) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
 };
+
