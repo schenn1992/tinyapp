@@ -111,7 +111,15 @@ app.post("/register", (req, res) => {
   const password = req.body.password;
   const id = generateRandomString(7);
   users[id] = { id, email, password };
-  console.log(users);
+  console.log("email: ", email);
+  console.log("password: ", password);
+  console.log("value: ", users[id]);
+  if (email === "" || password === "") {
+    return res.status(400).send("400 error. Please enter valid email or password");
+  };
+  if (getUserByEmail(email,users)) {
+    return res.status(400).send("this email already registered");
+  };
   res.cookie("user_id", id);
   res.redirect("/urls");
 });
