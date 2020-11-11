@@ -1,11 +1,14 @@
 const express = require("express");
-const app = express();
-const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser');
+const PORT = 8080; // default port 8080
 const { response } = require("express");
+
+const app = express();
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -61,6 +64,12 @@ app.post("/urls/:url/delete", (req, res) => {
 
 app.post("/urls/:url", (req, res) => {
   urlDatabase[req.params.url] = "http://" + req.body.newLongURL;
+  res.redirect("/urls");
+});
+
+app.post("/login", (req, res) => {
+  console.log("login req.body: ", req.body); 
+  res.cookie("username", req.body.inputName);
   res.redirect("/urls");
 });
 
