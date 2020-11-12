@@ -9,10 +9,13 @@
 <body>
   <%- include('partials/_header') %>
   <main style="margin: 1em;">
+    <h3>Login</h3>
     <form action="/login" method="POST">
-      <input type="email" name="email" placeholder="e-mail">
-      <input type="password" name="password" placeholder="password">
-      <input type="submit" value="submit">
+      <h5>Email address</h5>
+      <input type="email" name="email" placeholder="Enter email">
+      <h5>Password</h5>
+      <input type="password" name="password" placeholder="Password">
+      <button type="submit">Login</button>
     </form>
   </main>
   <!-- Bootstrap JS -->

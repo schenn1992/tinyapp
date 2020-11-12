@@ -10,31 +10,14 @@
 <body>
   <%- include('partials/_header') %>
   <main style="margin: 1em;">
-    <h3>My URLs</h3>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Short URL</th>
-          <th scope="col">Long URL</th>
-          <th scope="col">Edit</th>
-          <th scope="col">Delete</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for(let url in urls) { %>
-          <tr>
-            <td><%= url %></td>
-            <td><%= urls[url] %></td>
-            <td><form method="GET" action="<%=`/urls/${url}`%>"><input type="submit" value="Edit">
-            </form>
-            </td>
-            <td><form method="POST" action="<%=`/urls/${url}/delete`%>"><input type="submit" value="Delete">
-            </form>
-            </td>
-          </tr>
-        <% } %>
-      </tbody>
-    </table>
+    <h3>Create Account</h3>
+    <form action="/register" method="POST">
+      <h5>Email address</h5>
+      <input type="email" name="email" placeholder="Enter email">
+      <h5>Password</h5>
+      <input type="password" name="password" placeholder="Password">
+      <button type="submit">Register</button>
+    </form>
   </main>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

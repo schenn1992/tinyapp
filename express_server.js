@@ -28,7 +28,7 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com",
 };
 
-const users = {};
+let users = {};
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -42,42 +42,16 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
+
+
+//MY URLS PAGE
 app.get("/urls", (req, res) => {
   const id = req.cookies.user_id;
   const user = users[id];
+  console.log(user)
+  console.log("id:", id);
   const templateVars = { urls: urlDatabase, user};
   res.render("urls_index", templateVars);
-});
-
-app.get("/urls/new", (req, res) => {
-  
-  const id = req.cookies.user_id;
-  const user = users[id];
-  const templateVars = { user };
-  res.render("urls_new", templateVars);
-});
-
-app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]};
-  res.render("urls_show", templateVars);
-});
-
-app.get("/u/:shortURL", (req, res) => {
-  const shortURL = req.params.shortURL;
-  const longURL = "https://" + urlDatabase[req.params.shortURL];
-  console.log("shortURL", shortURL);
-  console.log("longURL", longURL);
-  res.redirect(longURL);
-});
-
-app.get("/register", (req, res) => {
-  const templateVars = { user: req.cookies.user_id };
-  res.render("urls_registration", templateVars);
-});
-
-app.get("/login", (req, res) => {
-  const templateVars = { user: req.cookies.user_id };
-  res.render("urls_login", templateVars);
 });
 
 app.post("/urls", (req, res) => {
@@ -88,44 +62,84 @@ app.post("/urls", (req, res) => {
   res.redirect(`urls/${shortURL}`);         
 });
 
+//CREATE TINYURL PAGE
+app.get("/urls/new", (req, res) => {
+  console.log("user: ", users[req.cookies.user_id])
+  const templateVars = { user: users[req.cookies.user_id] };
+  res.render("urls_new", templateVars);
+});
+
+app.get("/urls/:shortURL", (req, res) => {
+  const templateVars = { 
+    shortURL: req.params.shortURL, 
+    longURL: urlDatabase[req.params.shortURL], 
+    user: users[req.cookies.user_id]
+  };
+  res.render("urls_show", templateVars);
+});
+
+//DIRECT TO DESIGNATED PAGE
+app.get("/u/:shortURL", (req, res) => {
+  const shortURL = req.params.shortURL;
+  const longURL = "https://" + urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
+});
+
+//DELETE URL
 app.post("/urls/:url/delete", (req, res) => {
   delete urlDatabase[req.params.url]; 
   res.redirect("/urls");
 });
 
-app.post("/urls/:url", (req, res) => {
-  urlDatabase[req.params.url] = "http://" + req.body.newLongURL;
-  res.redirect("/urls");
-});
-
-app.post("/login", (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
-  const user = getUserByEmail(email, users);
-  res.cookie("user_id", user.id);
-  res.redirect("/urls");
-});
-
-app.post("/logout", (req, res) => {
-  res.clearCookie("user_id");
-  res.redirect("/urls");
+//REGISTRATION PAGE
+app.get("/register", (req, res) => {
+  const templateVars = { user: ''} 
+  res.render("urls_registration", templateVars);
 });
 
 app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const id = generateRandomString(7);
+  if (getUserByEmail(email, users)) {
+    return res.status(400).send("this email already registered");
+  };
   users[id] = { id, email, password };
-  console.log("email: ", email);
-  console.log("password: ", password);
-  console.log("value: ", users[id]);
   if (email === "" || password === "") {
     return res.status(400).send("400 error. Please enter valid email or password");
   };
-  if (getUserByEmail(email,users)) {
-    return res.status(400).send("this email already registered");
-  };
   res.cookie("user_id", id);
+  res.redirect("/urls");
+});
+
+//LOGIN PAGE
+app.get("/login", (req, res) => {
+  const templateVars = { user: req.cookies.user_id };
+  console.log(req.cookies);
+  res.render("urls_login", templateVars);
+});
+
+app.post("/login", (req, res) => {
+  const email = req.body.email;
+  const receivedPassword = req.body.password;
+  const user = getUserByEmail(email, users);
+  console.log(user);
+  if(user && user.password === receivedPassword) {
+    res.cookie("user_id", user.id);
+    res.redirect("/urls");
+  } else {
+    return res.status(403).send("403 error. Please enter valid email or password");
+  }
+});
+
+//LOGOUT 
+app.post("/logout", (req, res) => {
+  res.clearCookie("user_id");
+  res.redirect("/urls");
+});
+
+app.post("/urls/:url", (req, res) => {
+  urlDatabase[req.params.url] = "http://" + req.body.newLongURL;
   res.redirect("/urls");
 });
 
