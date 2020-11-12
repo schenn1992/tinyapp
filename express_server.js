@@ -120,9 +120,9 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  const email = req.body.email;
+  const receivedEmail = req.body.email;
   const receivedPassword = req.body.password;
-  const user = getUserByEmail(email, users);
+  const user = getUserByEmail(receivedEmail, users);
   console.log(user);
   if(user && user.password === receivedPassword) {
     res.cookie("user_id", user.id);
