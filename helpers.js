@@ -1,3 +1,4 @@
+const { response } = require("express");
 const server = require("./express_server");
 
 function generateRandomString(length) {
@@ -10,6 +11,15 @@ function generateRandomString(length) {
   return result;
 };
 
+const urlsForUser = function(id, urls) {
+  let newURLsObj = {};
+  for(let url in urls) {
+    if(urls[url].userID === id) {
+      newURLsObj[url] = urls[url];
+    }
+    console.log(urls[url]);
+  }
+  return newURLsObj;
+} 
 
-
-module.exports = { generateRandomString };
+module.exports = { generateRandomString, urlsForUser };
