@@ -1,6 +1,15 @@
 const { response } = require("express");
 const server = require("./express_server");
 
+const getUserByEmail = function(email, users) {
+  for (let user in users) {
+    if (users[user].email === email) {
+      return users[user];
+    }
+  } 
+};
+
+
 function generateRandomString(length) {
   let result = '';
   let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -22,4 +31,4 @@ const urlsForUser = function(id, urls) {
   return newURLsObj;
 } 
 
-module.exports = { generateRandomString, urlsForUser };
+module.exports = { generateRandomString, urlsForUser, getUserByEmail };
