@@ -40,6 +40,11 @@ app.get("/urls", (req, res) => {
   const user = users[id];
   const urls = urlsForUser(id, urlDatabase);
   const templateVars = { urls, user};
+  if(!user) {
+    res.status(403);
+    res.send("Please log in first");
+    return;
+  }
   res.render("urls_index", templateVars);
 });
 
