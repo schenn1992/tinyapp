@@ -1,6 +1,3 @@
-const { response } = require("express");
-const server = require("./express_server");
-
 const getUserByEmail = function(email, users) {
   for (let user in users) {
     if (users[user].email === email) {
@@ -8,7 +5,6 @@ const getUserByEmail = function(email, users) {
     }
   } 
 };
-
 
 function generateRandomString(length) {
   let result = '';
