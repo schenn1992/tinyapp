@@ -67,12 +67,17 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  let shortURL = req.params.shortURL;
-  let longURL = urlDatabase[shortURL].longURL;
+  const shortURL = req.params.shortURL;
+  const longURL = urlDatabase[shortURL].longURL;
+  const id = req.session.user_id;
+  const user = users[id];
+  if (id !== urlDatabase[shortURL].userID) {
+    return res.status(400).send("You don't have access");
+  } 
   const templateVars = {
     shortURL,
     longURL,
-    user: users[req.session.user_id]
+    user
   };
   res.render("urls_show", templateVars);
 });
